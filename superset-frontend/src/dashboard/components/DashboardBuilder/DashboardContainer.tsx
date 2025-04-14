@@ -18,7 +18,7 @@
  */
 // ParentSize uses resize observer so the dashboard will update size
 // when its container size changes, due to e.g., builder side panel opening
-import {
+import React, {
   FC,
   memo,
   useCallback,
@@ -65,6 +65,8 @@ import { getColorNamespace, resetColors } from 'src/utils/colorScheme';
 import { NATIVE_FILTER_DIVIDER_PREFIX } from '../nativeFilters/FiltersConfigModal/utils';
 import { findTabsWithChartsInScope } from '../nativeFilters/utils';
 import { getRootLevelTabsComponent } from './utils';
+import {Button} from '../../../components';
+import downloadAsPdf from '../../../utils/downloadAsPdf';
 
 type DashboardContainerProps = {
   topLevelTabs?: LayoutItem;
@@ -310,9 +312,31 @@ const DashboardContainer: FC<DashboardContainerProps> = ({ topLevelTabs }) => {
     ),
     [activeKey, childIds, dashboardLayout, handleFocus, renderTabBar, tabIndex],
   );
+  const handleDownload = () => {
+    try {
+      downloadAsPdf('.dashboard', 'Dashboard PDF', true)({
+        preventDefault: () => {},
+        stopPropagation: () => {},
+      } as unknown as React.SyntheticEvent);
+    } catch (e) {
+      console.error('PDF Download failed:', e);
+    }
+  };
 
   return (
     <div className="grid-container" data-test="grid-container">
+      {/* 👇 PDF Button goes here */}
+      <div style={{ display: 'flex', justifyContent: 'flex-end', padding: '8px' }}>
+        <Button
+          buttonStyle="primary"
+          size="small"
+          onClick={handleDownload}
+        >
+          Download PDF
+        </Button>
+      </div>
+
+      {/* 👇 The actual charts/tabs */}
       <ParentSize>{renderParentSizeChildren}</ParentSize>
     </div>
   );
