@@ -43,6 +43,7 @@ import { useSelector } from 'react-redux';
 import { Menu } from 'src/components/Menu';
 import { NoAnimationDropdown } from 'src/components/Dropdown';
 import ShareMenuItems from 'src/dashboard/components/menu/ShareMenuItems';
+import downloadAsImage from 'src/utils/downloadAsImage';
 import { getSliceHeaderTooltip } from 'src/dashboard/util/getSliceHeaderTooltip';
 import { Tooltip } from 'src/components/Tooltip';
 import { Icons } from 'src/components/Icons';
@@ -57,7 +58,6 @@ import { usePermissions } from 'src/hooks/usePermissions';
 import Button from 'src/components/Button';
 import { useCrossFiltersScopingModal } from '../nativeFilters/FilterBar/CrossFilters/ScopingModal/useCrossFiltersScopingModal';
 import { ViewResultsModalTrigger } from './ViewResultsModalTrigger';
-import downloadAsPdf from '../../../utils/downloadAsPdf';
 
 // TODO: replace 3 dots with an icon
 const VerticalDotsContainer = styled.div`
@@ -91,8 +91,8 @@ const RefreshTooltip = styled.div`
   justify-content: flex-start;
 `;
 
-// const getScreenshotNodeSelector = (chartId: string | number) =>
-//   `.dashboard-chart-id-${chartId}`;
+const getScreenshotNodeSelector = (chartId: string | number) =>
+  `.dashboard-chart-id-${chartId}`;
 
 const VerticalDotsTrigger = () => (
   <VerticalDotsContainer>
@@ -246,8 +246,8 @@ const SliceHeaderControls = (
         if (menu) {
           menu.style.visibility = 'hidden';
         }
-        downloadAsPdf(
-          '.dashboard',
+        downloadAsImage(
+          getScreenshotNodeSelector(props.slice.slice_id),
           props.slice.slice_name,
           true,
           // @ts-ignore
@@ -497,7 +497,7 @@ const SliceHeaderControls = (
             key={MenuKeys.DownloadAsImage}
             icon={<Icons.FileImageOutlined css={dropdownIconsStyles} />}
           >
-            {t('Download as PDF')}
+            {t('Download as image')}
           </Menu.Item>
         </Menu.SubMenu>
       )}
